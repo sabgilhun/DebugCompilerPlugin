@@ -1,0 +1,38 @@
+plugins {
+    id 'java-library'
+    id 'org.jetbrains.kotlin.jvm'
+    id 'org.jetbrains.kotlin.kapt'
+    id 'maven-publish'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = 'com.example.sampleplugin'
+            artifactId = 'sample-compiler-plugin'
+            version = '1.0.0'
+
+            from components.java
+        }
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
+
+dependencies {
+    compileOnly "com.google.auto.service:auto-service-annotations:1.0.1"
+    compileOnly "org.jetbrains.kotlin:kotlin-compiler-embeddable"
+
+    kapt "com.google.auto.service:auto-service:1.0"
+
+    testImplementation "org.junit.jupiter:junit-jupiter:5.9.0"
+    testImplementation "org.jetbrains.kotlin:kotlin-compiler-embeddable"
+    testImplementation "com.github.tschuchortdev:kotlin-compile-testing:1.4.9"
+}
