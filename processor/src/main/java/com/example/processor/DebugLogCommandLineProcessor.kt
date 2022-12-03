@@ -27,11 +27,11 @@ class DebugLogCommandLineProcessor : CommandLineProcessor {
         configuration: CompilerConfiguration,
     ) {
         if (option.optionName == "useTimeElapsedPrinting") {
-            configuration.put(argName, value.toBoolean())
+            configuration.put(argUseTimeElapsedPrinting, value.toBoolean())
         }
     }
 
     companion object {
-        val argName = CompilerConfigurationKey<Boolean>("useTimeElapsedPrinting")
+        val argUseTimeElapsedPrinting = CompilerConfigurationKey<Boolean>("useTimeElapsedPrinting")
     }
 }
