@@ -18,3 +18,4 @@ rootProject.name = "DebugLogCompilePlugin"
 include ':app'
 include ':plugin'
 include ':processor'
+include ':annotation'
