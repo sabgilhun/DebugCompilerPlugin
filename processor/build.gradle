@@ -13,8 +13,8 @@ java {
 publishing {
     publications {
         maven(MavenPublication) {
-            groupId = 'com.example.sampleplugin'
-            artifactId = 'sample-compiler-plugin'
+            groupId = 'com.example.plugin'
+            artifactId = 'debuglog-compiler-plugin'
             version = '1.0.0'
 
             from components.java

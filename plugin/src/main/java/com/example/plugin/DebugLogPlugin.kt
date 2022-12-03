@@ -39,7 +39,7 @@ class DebugLogPlugin : KotlinCompilerPluginSupportPlugin {
 
     override fun getPluginArtifact() = SubpluginArtifact(
         groupId = "com.example.plugin",
-        artifactId = "debuglog-plugin",
+        artifactId = "debuglog-compiler-plugin",
         version = "1.0.0"
     )
 }
