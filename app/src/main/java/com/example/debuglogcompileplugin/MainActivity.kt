@@ -1,6 +1,7 @@
 package com.example.debuglogcompileplugin
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.annotation.DebugLog
@@ -18,7 +19,9 @@ class MainActivity : AppCompatActivity() {
 
     @DebugLog
     private fun annotationTest(param: String, paramHavingDefaultValue: String = "world"): String {
-        println("$param $paramHavingDefaultValue")
-        return "hi!!"
+        val start = System.currentTimeMillis()
+        val end = System.currentTimeMillis()
+        val elapsed = end - start
+        return elapsed.toString()
     }
 }

@@ -39,8 +39,9 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
     }
 }
 
-debuglog {
-    useTimeElapsedPrinting = true
+debugLog {
+    logTag = "my debug log"
+    logLevel = "info"
 }
 
 dependencies {

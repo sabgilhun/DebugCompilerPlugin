@@ -26,11 +26,18 @@ class DebugLogPlugin : KotlinCompilerPluginSupportPlugin {
     ): Provider<List<SubpluginOption>> {
         val project = kotlinCompilation.target.project
         val extensions = project.extensions.getByName(EXTENSION_NAME) as DebugLogPluginExtension
-        val useTimeElapsedPrintingProperty = extensions.useTimeElapsedPrinting.get()
+
+        val logTagProperty = extensions.logTag.get()
+        val logLevelProperty = extensions.logLevel.get()
+
+        if (!listOf("verbose", "info", "debug", "warning", "error").contains(logLevelProperty)) {
+            throw IllegalArgumentException("logLevel property 값은 verbose, info, debug, warning, error 중 하나이여야 합니다.")
+        }
 
         return project.provider {
             listOf(
-                SubpluginOption("useTimeElapsedPrinting", useTimeElapsedPrintingProperty.toString())
+                SubpluginOption("logTag", logTagProperty),
+                SubpluginOption("logLevel", logLevelProperty)
             )
         }
     }

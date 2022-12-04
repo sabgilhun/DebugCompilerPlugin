@@ -18,12 +18,16 @@ class DebugLogComponentRegistrar : ComponentRegistrar {
         val messageCollector =
             configuration.get(CLIConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
 
-        val useTimeElapsedPrinting =
-            configuration.get(DebugLogCommandLineProcessor.argUseTimeElapsedPrinting, false)
+        val logTag =
+            configuration.get(DebugLogCommandLineProcessor.argLogTag, "DebugLog")
+
+        val logLevel =
+            configuration.get(DebugLogCommandLineProcessor.argLogLevel, "info")
+
 
         IrGenerationExtension.registerExtension(
             project,
-            DebugLogIrGenerationExtension(messageCollector, useTimeElapsedPrinting)
+            DebugLogIrGenerationExtension(messageCollector, logTag, logLevel)
         )
     }
 }

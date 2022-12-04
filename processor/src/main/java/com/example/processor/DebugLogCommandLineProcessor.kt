@@ -14,10 +14,16 @@ class DebugLogCommandLineProcessor : CommandLineProcessor {
 
     override val pluginOptions: Collection<AbstractCliOption> = listOf(
         CliOption(
-            optionName = "useTimeElapsedPrinting",
-            valueDescription = "Boolean",
-            description = "option for using time elapsed print feature",
-            required = true,
+            optionName = "logTag",
+            valueDescription = "String",
+            description = "Logging시 사용되는 Tag값",
+            required = false,
+        ),
+        CliOption(
+            optionName = "logLevel",
+            valueDescription = "String",
+            description = "Logging시 적용되는 Level값",
+            required = false,
         ),
     )
 
@@ -26,12 +32,14 @@ class DebugLogCommandLineProcessor : CommandLineProcessor {
         value: String,
         configuration: CompilerConfiguration,
     ) {
-        if (option.optionName == "useTimeElapsedPrinting") {
-            configuration.put(argUseTimeElapsedPrinting, value.toBoolean())
+        when (option.optionName) {
+            "logTag" -> configuration.put(argLogTag, value)
+            "argLogLevel" -> configuration.put(argLogLevel, value)
         }
     }
 
     companion object {
-        val argUseTimeElapsedPrinting = CompilerConfigurationKey<Boolean>("useTimeElapsedPrinting")
+        val argLogTag = CompilerConfigurationKey<String>("logTag")
+        val argLogLevel = CompilerConfigurationKey<String>("logLevel")
     }
 }
