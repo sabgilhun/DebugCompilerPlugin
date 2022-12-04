@@ -1,7 +1,7 @@
 package com.example.debuglogcompileplugin
 
 import android.os.Bundle
-import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.annotation.DebugLog
 
@@ -10,13 +10,15 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        findViewById<View>(R.id.button).setOnClickListener {
-            annotationTest("hello")
+        findViewById<TextView>(R.id.button).setOnClickListener {
+            val result = annotationTest("hello")
+            (it as TextView).text = result
         }
     }
 
     @DebugLog
-    private fun annotationTest(param: String, paramHavingDefaultValue: String = "world") {
+    private fun annotationTest(param: String, paramHavingDefaultValue: String = "world"): String {
         println("$param $paramHavingDefaultValue")
+        return "hi!!"
     }
 }
