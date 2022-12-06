@@ -33,8 +33,12 @@ class DebugLogCommandLineProcessor : CommandLineProcessor {
         configuration: CompilerConfiguration,
     ) {
         when (option.optionName) {
-            "logTag" -> configuration.put(argLogTag, value)
-            "argLogLevel" -> configuration.put(argLogLevel, value)
+            "logTag" -> if (value.isNotEmpty()) {
+                configuration.put(argLogTag, value)
+            }
+            "argLogLevel" -> if (value.isNotEmpty()) {
+                configuration.put(argLogLevel, value)
+            }
         }
     }
 

@@ -14,7 +14,6 @@ import org.jetbrains.kotlin.ir.declarations.IrDeclarationOrigin
 import org.jetbrains.kotlin.ir.declarations.IrFunction
 import org.jetbrains.kotlin.ir.declarations.IrVariable
 import org.jetbrains.kotlin.ir.expressions.*
-import org.jetbrains.kotlin.ir.expressions.impl.IrTryImpl
 import org.jetbrains.kotlin.ir.symbols.IrClassSymbol
 import org.jetbrains.kotlin.ir.symbols.IrSimpleFunctionSymbol
 import org.jetbrains.kotlin.ir.util.dump
@@ -58,9 +57,10 @@ class DebugLogTransformer(
     override fun visitFunctionNew(declaration: IrFunction): IrStatement {
         val body = declaration.body
         if (body != null && declaration.hasAnnotation(debugLogAnnotationIrReference)) {
-            messageCollector.report(CompilerMessageSeverity.INFO, "here!!")
-            messageCollector.report(CompilerMessageSeverity.INFO, body.dump())
-            declaration.body = irDebug(declaration, body)
+            val generatedBody = irDebug(declaration, body)
+            declaration.body = generatedBody
+            messageCollector.report(CompilerMessageSeverity.INFO, "Generated Function Body")
+            messageCollector.report(CompilerMessageSeverity.INFO, generatedBody.dump())
         }
         return super.visitFunctionNew(declaration)
     }
@@ -137,11 +137,12 @@ class DebugLogTransformer(
             +irCallLogTimeElapsedInformation(elapsed)
         }
 
-        +IrTryImpl(startOffset, endOffset, tryBlock.type).apply {
-            tryResult = tryBlock
-            catches += catchBlock
+        +irTry(
+            type = tryBlock.type,
+            tryResult = tryBlock,
+            catches = listOf(catchBlock),
             finallyExpression = finallyBlock
-        }
+        )
     }
 
     private fun IrBuilderWithScope.irCallLogFunctionName(
@@ -204,7 +205,6 @@ class DebugLogTransformer(
     ) : IrElementTransformerVoidWithContext() {
 
         override fun visitReturn(expression: IrReturn): IrExpression {
-            // why?
             if (expression.returnTargetSymbol != function.symbol) {
                 return super.visitReturn(expression)
             }

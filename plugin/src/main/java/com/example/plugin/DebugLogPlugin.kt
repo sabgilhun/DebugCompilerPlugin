@@ -27,17 +27,20 @@ class DebugLogPlugin : KotlinCompilerPluginSupportPlugin {
         val project = kotlinCompilation.target.project
         val extensions = project.extensions.getByName(EXTENSION_NAME) as DebugLogPluginExtension
 
-        val logTagProperty = extensions.logTag.get()
-        val logLevelProperty = extensions.logLevel.get()
+        val logTagProperty = extensions.logTag.orNull
+        val logLevelProperty = extensions.logLevel.orNull
 
-        if (!listOf("verbose", "info", "debug", "warning", "error").contains(logLevelProperty)) {
+        if (
+            logLevelProperty != null
+            && !listOf("verbose", "info", "debug", "warning", "error").contains(logLevelProperty)
+        ) {
             throw IllegalArgumentException("logLevel property 값은 verbose, info, debug, warning, error 중 하나이여야 합니다.")
         }
 
         return project.provider {
             listOf(
-                SubpluginOption("logTag", logTagProperty),
-                SubpluginOption("logLevel", logLevelProperty)
+                SubpluginOption("logTag", logTagProperty.orEmpty()),
+                SubpluginOption("logLevel", logLevelProperty.orEmpty())
             )
         }
     }

@@ -18,14 +18,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     @DebugLog
-    private fun annotationTest(param: String, paramHavingDefaultValue: String = "world"): String {
-        var a = 0
-        for (i in 1..400) {
-            for (j in 1..400) {
-                if (j == 200) throw IllegalArgumentException()
-                a++
-            }
+    private fun annotationTest(p1: String, paramHavingDefaultValue: String = "world"): String {
+        if (p1.isEmpty()) {
+            return ""
         }
-        return "counted: $a, $param, $paramHavingDefaultValue"
+
+        return p1 + paramHavingDefaultValue
     }
 }

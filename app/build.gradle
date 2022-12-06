@@ -41,7 +41,6 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
 
 debugLog {
     logTag = "my debug log"
-    logLevel = "info"
 }
 
 dependencies {

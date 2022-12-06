@@ -18,7 +18,7 @@ class DebugLogIrGenerationExtension(
     /**
      * fun origin() {
      *  Log.i(tag, "function name: fun-name")
-     *  Log.i(tag, "params: [param1-name = ..., param2-name = ...]")
+     *  Log.i(tag, "params: [param1-name = ${param1}, param2-name = ${param2} ...]")
      *  val start = System.currentTimeMillis()
      *  try {
      *   < origin function body >
@@ -29,7 +29,8 @@ class DebugLogIrGenerationExtension(
      *   Log.i(tag, "throw error: ...")
      *   throw e
      *  } finally {
-     *   val elapsed = System.currentTimeMillis() - start
+     *   val end = System.currentTimeMillis()
+     *   val elapsed = end - start
      *   Log.i(tag, "time elapsed: ${elapsed}ms")
      *  }
      * }
