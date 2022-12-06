@@ -17,8 +17,8 @@ import org.jetbrains.kotlin.ir.expressions.*
 import org.jetbrains.kotlin.ir.expressions.impl.IrTryImpl
 import org.jetbrains.kotlin.ir.symbols.IrClassSymbol
 import org.jetbrains.kotlin.ir.symbols.IrSimpleFunctionSymbol
-import org.jetbrains.kotlin.ir.types.isNullable
 import org.jetbrains.kotlin.ir.util.dump
+import org.jetbrains.kotlin.ir.util.functions
 import org.jetbrains.kotlin.ir.util.hasAnnotation
 import org.jetbrains.kotlin.ir.util.statements
 import org.jetbrains.kotlin.name.FqName
@@ -31,12 +31,20 @@ class DebugLogTransformer(
     private val logLevel: String,
 ) : IrElementTransformerVoidWithContext() {
 
+    private val logClassIrReference by lazy {
+        checkNotNull(pluginContext.referenceClass(FqName("android.util.Log")))
+    }
+
+    private val systemClassIrReference by lazy {
+        checkNotNull(pluginContext.referenceClass(FqName("java.lang.System")))
+    }
+
     private val debugLogAnnotationIrReference by lazy {
         findAnnotationIrReference(pluginContext)
     }
 
     private val logFunIrReference by lazy {
-        findLogFunIrReference(pluginContext)
+        findLogFunIrReference()
     }
 
     private val currentTimeMillisFunIrReference by lazy {
@@ -62,9 +70,7 @@ class DebugLogTransformer(
     ): IrClassSymbol =
         checkNotNull(pluginContext.referenceClass(FqName("com.example.annotation.DebugLog")))
 
-    private fun findLogFunIrReference(
-        pluginContext: IrPluginContext,
-    ): IrSimpleFunctionSymbol {
+    private fun findLogFunIrReference(): IrSimpleFunctionSymbol {
         val loggingFunName = when (logLevel) {
             "verbose" -> "v"
             "info" -> "i"
@@ -73,22 +79,18 @@ class DebugLogTransformer(
             "error" -> "e"
             else -> throw IllegalStateException("logLevel 옵션 값이 올바르지 않습니다.")
         }
-        val typeString = pluginContext.irBuiltIns.stringType
-        return pluginContext.referenceFunctions(FqName("android.util.Log.$loggingFunName"))
-            .single {
-                val parameters = it.owner.valueParameters
-                true
-//                parameters.size == 2
-//                        && parameters[0].type == typeString
-//                        && parameters[0].type.isNullable()
-//                        && parameters[1].type == typeString
-//                        && !parameters[0].type.isNullable()
-            }
+
+        return logClassIrReference.functions.single {
+            val parameters = it.owner.valueParameters
+            it.owner.name.asString() == loggingFunName && parameters.size == 2
+        }
     }
 
     private fun findCurrentTimeMillisFunIrReference(): IrSimpleFunctionSymbol =
-        pluginContext.referenceFunctions(FqName("java.lang.System.currentTimeMillis")).single()
-
+        systemClassIrReference.functions.single {
+            val parameters = it.owner.valueParameters
+            it.owner.name.asString() == "currentTimeMillis" && parameters.isEmpty()
+        }
 
     private fun findLongMinusFunIrReference(
         pluginContext: IrPluginContext,
@@ -127,9 +129,10 @@ class DebugLogTransformer(
         })
 
         val finallyBlock = irBlock {
+            val endVariableIr = irTemporary(irCall(currentTimeMillisFunIrReference))
             val elapsed = irTemporary(irCall(longMinusFunIrReference).apply {
-                dispatchReceiver = irCall(currentTimeMillisFunIrReference)
-                extensionReceiver = irGet(startVariableIr)
+                dispatchReceiver = irGet(endVariableIr)
+                putValueArgument(0, irGet(startVariableIr))
             })
             +irCallLogTimeElapsedInformation(elapsed)
         }
@@ -222,9 +225,9 @@ class DebugLogTransformer(
                 addArgument(irString("result: "))
                 addArgument(irGet(result))
             }
-            return irCall(logFunIrReference).also { call ->
-                call.putValueArgument(0, irString(logTag))
-                call.putValueArgument(1, irStringConcatenation)
+            return irCall(logFunIrReference).apply {
+                putValueArgument(0, irString(logTag))
+                putValueArgument(1, irStringConcatenation)
             }
         }
     }
