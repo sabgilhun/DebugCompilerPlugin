@@ -19,10 +19,7 @@ class MainActivity : AppCompatActivity() {
 
     @DebugLog
     private fun annotationTest(p1: String, paramHavingDefaultValue: String = "world"): String {
-        if (p1.isEmpty()) {
-            return ""
-        }
-
+        println("??")
         return p1 + paramHavingDefaultValue
     }
 }

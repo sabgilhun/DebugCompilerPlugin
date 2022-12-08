@@ -15,32 +15,22 @@ class DebugLogIrGenerationExtension(
     private val logLevel: String,
 ) : IrGenerationExtension {
 
-    /**
-     * fun origin() {
-     *  Log.i(tag, "function name: fun-name")
-     *  Log.i(tag, "params: [param1-name = ${param1}, param2-name = ${param2} ...]")
-     *  val start = System.currentTimeMillis()
-     *  try {
-     *   < origin function body >
-     *   val result = <original return>
-     *   Log.i(tag, "result: ...")
-     *   return ...
-     *  } catch (e: Throwable) {
-     *   Log.i(tag, "throw error: ...")
-     *   throw e
-     *  } finally {
-     *   val end = System.currentTimeMillis()
-     *   val elapsed = end - start
-     *   Log.i(tag, "time elapsed: ${elapsed}ms")
-     *  }
-     * }
-     */
+    /** nav-13
+     * Compiler 단계에서 IR generate 된 후 호출 됨
+     * moduleFragment < IR root node 객체
+     * (IR도 Tree 형태)
+     * pluginContext < symbol 정보 담고 있는 객체
+     **/
     override fun generate(
         moduleFragment: IrModuleFragment,
         pluginContext: IrPluginContext,
     ) {
         messageCollector.report(CompilerMessageSeverity.INFO, "start generating ir step")
 
+        /** nav-14
+         * IR tree 를 순회하기 위한 Transformer(Visitor)
+         * 이 내부에서 코드 수정 이뤄짐
+         **/
         val debugLogTransformer =
             DebugLogTransformer(messageCollector, pluginContext, logTag, logLevel)
 

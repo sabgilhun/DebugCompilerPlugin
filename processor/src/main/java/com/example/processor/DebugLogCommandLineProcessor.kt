@@ -10,8 +10,14 @@ import org.jetbrains.kotlin.config.CompilerConfigurationKey
 @AutoService(CommandLineProcessor::class)
 class DebugLogCommandLineProcessor : CommandLineProcessor {
 
+    /** nav-9
+     *  KotlinCompilerPluginSupportPlugin 에서 지정했던 id 써야 함
+     **/
     override val pluginId = "debuglog-compiler-plugin"
 
+    /** nav-10
+     * Kotlin Compiler Plugin 에서 사용하는 옵션 정의
+     **/
     override val pluginOptions: Collection<AbstractCliOption> = listOf(
         CliOption(
             optionName = "logTag",
@@ -27,6 +33,9 @@ class DebugLogCommandLineProcessor : CommandLineProcessor {
         ),
     )
 
+    /** nav-11
+     * SubPlugin, Command Line 을 통해 들어온 옵션, 등록
+     **/
     override fun processOption(
         option: AbstractCliOption,
         value: String,

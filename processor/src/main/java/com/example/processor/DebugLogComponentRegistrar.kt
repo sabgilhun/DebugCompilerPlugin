@@ -11,6 +11,9 @@ import org.jetbrains.kotlin.config.CompilerConfiguration
 @AutoService(ComponentRegistrar::class)
 class DebugLogComponentRegistrar : ComponentRegistrar {
 
+    /** nav-12
+     * 설정 값 꺼내고, Extension 등록 및 설정 값 전달
+     **/
     override fun registerProjectComponents(
         project: MockProject,
         configuration: CompilerConfiguration,
@@ -23,7 +26,6 @@ class DebugLogComponentRegistrar : ComponentRegistrar {
 
         val logLevel =
             configuration.get(DebugLogCommandLineProcessor.argLogLevel, "info")
-
 
         IrGenerationExtension.registerExtension(
             project,

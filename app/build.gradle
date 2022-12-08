@@ -39,6 +39,9 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
     }
 }
 
+/** nav-3
+ *  Extension 사용
+ **/
 debugLog {
     logTag = "my debug log"
 }

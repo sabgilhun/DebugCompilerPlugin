@@ -10,6 +10,10 @@ java {
     targetCompatibility = JavaVersion.VERSION_1_8
 }
 
+/** nav-8
+ *  Kotlin Compiler Plugin 배포 설정
+ *  Subplugin에서
+ **/
 publishing {
     publications {
         maven(MavenPublication) {
